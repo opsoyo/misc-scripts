@@ -13,7 +13,7 @@ var playlistURIs = JSON.parse(window.localStorage.getItem("pURIs")) || [];
 var videoURLs = JSON.parse(window.localStorage.getItem("vURLs")) || [];
 
 var baseURL = 'https://www.doyogawithme.com/yoga-classes?page=';
-var pageStart = 1;
+var pageStart = 0;
 var pageEnd = document.querySelector('a[title="Go to last page"]').href.split('=')[1] + 1;
 
 async function timer(ms) {
