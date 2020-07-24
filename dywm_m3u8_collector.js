@@ -13,7 +13,7 @@ var playlistURIs = JSON.parse(window.localStorage.getItem("pURIs")) || [];
 var videoURLs = JSON.parse(window.localStorage.getItem("vURLs")) || [];
 
 var baseURL = 'https://www.doyogawithme.com/yoga-classes?page=';
-var pageStart = 0;
+var pageStart = 6;
 var pageEnd = document.querySelector('a[title="Go to last page"]').href.split('=')[1] + 1;
 
 async function timer(ms) {
@@ -38,19 +38,26 @@ async function getVideoPlaylist(url) {
     let htmlDocument = await htmlFetch(url);
     // Construct JSON URI
     let videoPlayerId = htmlDocument.documentElement.querySelector('div.field-collection-view.clearfix.view-mode-full.field-collection-view-final > div').dataset.playerId;
-    let videoPlayerSrc = htmlDocument.documentElement.querySelector('div.field-collection-view.clearfix.view-mode-full.field-collection-view-final > div > script').innerHTML;
-    let videoPlayerSrcId = videoPlayerSrc.match(/\"([a-zA-Z0-9-_]+)\"\,/)[1];
-    let videoJSONURI = `https://play.lwcdn.com/web/public/native/config/${videoPlayerId}/${videoPlayerSrcId}`;
+    let videoPlayerSrcElm = htmlDocument.documentElement.querySelector('div.field-collection-view.clearfix.view-mode-full.field-collection-view-final > div > script');
 
-    let videoJSONFetch = await fetch(videoJSONURI);
-    let videoJSON = JSON.parse(await videoJSONFetch.text());
+    if(typeof(element) != 'undefined' && element != null){
+        // Using CDN
+        let videoPlayerSrc = videoPlayerSrcElm.innerHTML;
+        let videoPlayerSrcId = videoPlayerSrc.match(/\"([a-zA-Z0-9-_]+)\"\,/)[1];
+        let videoJSONURI = `https://play.lwcdn.com/web/public/native/config/${videoPlayerId}/${videoPlayerSrcId}`;
 
-    let videoJSONTitle = videoJSON['metadata']['title'];
-    let videoJSONPlaylist = videoJSON['src'][0];
+        let videoJSONFetch = await fetch(videoJSONURI);
+        let videoJSON = JSON.parse(await videoJSONFetch.text());
 
-    return [videoJSONTitle, videoJSONPlaylist];
-    
-    //console.log(`Saving ${videoJSONTitle}, ${videoJSONPlaylist}`);
+        let videoJSONTitle = videoJSON['metadata']['title'];
+        let videoJSONPlaylist = videoJSON['src'][0];
+
+        return [videoJSONTitle, videoJSONPlaylist];
+    } else {
+        // Using something else
+        return ['#None','#NoHandleForNonCDN'];
+    }
+
 }
 
 async function saveLinksToFile(str) {
