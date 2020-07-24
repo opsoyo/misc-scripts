@@ -40,7 +40,7 @@ async function getVideoPlaylist(url) {
     let videoPlayerId = htmlDocument.documentElement.querySelector('div.field-collection-view.clearfix.view-mode-full.field-collection-view-final > div').dataset.playerId;
     let videoPlayerSrcElm = htmlDocument.documentElement.querySelector('div.field-collection-view.clearfix.view-mode-full.field-collection-view-final > div > script');
 
-    if(typeof(element) != 'undefined' && element != null){
+    if(typeof(videoPlayerSrcElm) != 'undefined' && videoPlayerSrcElm != null){
         // Using CDN
         let videoPlayerSrc = videoPlayerSrcElm.innerHTML;
         let videoPlayerSrcId = videoPlayerSrc.match(/\"([a-zA-Z0-9-_]+)\"\,/)[1];
